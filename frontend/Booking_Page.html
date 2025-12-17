@@ -1,0 +1,712 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Booking Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f6f9fcba;
+      --card: rgba(57, 72, 55, 0.3);;
+      --primary: rgba(24, 31, 23, 0.2);;
+      --muted:#a0b1c6;
+      --accent:linear-gradient(90deg,#0b69d6 0%,#24aec7 100%);
+    }
+    *{box-sizing:border-box}
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: var(--bg);
+      color: #0f172a;
+      -webkit-font-smoothing:antialiased;
+    }
+    /* Page background image (place your image as `bg_booking.jpg` in the same folder)
+       Uses a ::before layer so the content and card styles remain readable. */
+    body::before{
+      content: '';
+      position: fixed;
+      inset: 0; /* top:0; right:0; bottom:0; left:0 */
+      z-index: -1;
+      background: url('bg7.jpg') center center/cover no-repeat;
+      opacity: 0.78;
+      filter: saturate(1.02) contrast(1.02) brightness(0.92) blur(0px);
+      transition: opacity 500ms ease, transform 800ms ease;
+      transform-origin: center;
+      will-change: opacity, transform;
+    }
+
+    /* background animation removed for performance and clarity */
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 28px 16px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-family: 'Poppins', system-ui, sans-serif;
+      text-transform: uppercase;
+      word-spacing: 2px;
+    }
+    .logo {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+    }
+    .container {
+      width: 92%;
+      max-width: 980px;
+      margin: 28px auto;
+      background: var(--card);
+      padding: 28px;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.08);
+      border: 1px solid rgba(15,23,42,0.03);
+    }
+    h2 {
+      margin: 0 0 12px 0;
+      color: #0f172a;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    p.lead{margin:0 0 18px;color:var(--muted)}
+
+    /* Form grid + fields */
+    form#bookingForm{width:100%}
+    .form-grid{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:16px 18px;
+      align-items:end;
+    }
+    .field{display:flex;flex-direction:column}
+    .field.full{grid-column:1 / -1}
+    label{font-size:0.98rem;color:#eff1f5e8;margin-bottom:8px;font-weight:600}
+    input, select, textarea{
+      width:100%;
+      padding:12px 10px;
+      border-radius:15px;
+      border:2px solid rgba(15,23,42,0.1);
+      background: #ffffff53;
+      font-size:0.95rem;
+      color:#0f131d;
+      transition:box-shadow .18s ease, border-color .18s ease, transform .18s ease;
+      box-shadow: 0 1px 0 rgba(2,6,23,0.02) inset;
+    }
+
+    /* Package input + dropdown styles */
+    .package-wrap{position:relative;display:flex;align-items:center}
+    .package-input{width:100%;padding:12px 40px 12px 12px;border-radius:12px;border:1px solid rgba(15,23,42,0.12);background:#ffffff53;box-shadow:0 4px 18px rgba(2,6,23,0.04);font-size:0.95rem}
+    .dropdown-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:0;color:var(--muted);font-size:18px;cursor:pointer;padding:6px;border-radius:8px}
+    .dropdown-toggle:focus{outline:2px solid rgba(11,105,214,0.18)}
+    .dropdown-list{position:absolute;left:0;right:0;top:calc(100% + 10px);background:#fbf9f9;color:#0f172a;border-radius:12px;box-shadow:0 14px 40px rgba(2,6,23,0.12);max-height:240px;overflow:auto;padding:6px 6px;opacity:0;transform:translateY(-8px);transition:opacity .18s ease,transform .18s ease;pointer-events:none;z-index:40}
+    .dropdown-list.show{opacity:1;transform:translateY(0);pointer-events:auto}
+    .dropdown-item{padding:10px 12px;border-radius:8px;cursor:pointer;margin:4px 2px;font-weight:600}
+    .dropdown-item:hover,.dropdown-item:focus{background:linear-gradient(90deg,rgba(11,105,214,0.06),rgba(11,105,214,0.02));outline:none}
+    input:focus, select:focus, textarea:focus{
+      outline: none;
+      border-color: rgba(11,105,214,0.85);
+      box-shadow: 0 6px 20px rgba(11,105,214,0.06);
+      transform: translateY(-1px);
+    }
+    input[type=date]{padding-top:11px;padding-bottom:11px}
+    textarea{min-height:110px;resize:vertical}
+
+    .actions{display:flex;gap:12px;align-items:center}
+    button{
+      display:inline-block;
+      padding:12px 18px;
+      border-radius:10px;
+      border:0;
+      color:#fff;
+      background:var(--accent);
+      font-size:1rem;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow: 0 8px 20px rgba(11,105,214,0.12);
+      transition:transform .16s ease, box-shadow .16s ease, opacity .12s ease;
+    }
+    button:hover{transform:translateY(-3px);opacity:0.98}
+    button:active{transform:translateY(-1px)}
+
+    .success {
+      margin-top: 18px;
+      padding: 14px 16px;
+      background: #ecfdf5;
+      color: #065f46;
+      border-radius: 10px;
+      display: none;
+      border: 1px solid rgba(6,95,70,0.08);
+    }
+
+    @media (max-width:720px){
+      .form-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="Travel Buddiezs SL Logo" class="logo" />
+   Travel Buddiezs 
+</header>
+
+<div class="container">
+  <h2>Book Your Trip</h2>
+  <form id="bookingForm" aria-label="Booking form">
+    <div class="form-grid">
+      <div class="field">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" required />
+      </div>
+
+      <div class="field">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" required />
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone Number</label>
+        <input type="text" id="phone" required />
+      </div>
+
+      <div class="field">
+        <label for="whatsapp">WhatsApp Number</label>
+        <input type="text" id="whatsapp" required />
+      </div>
+
+      <div class="field">
+        <label for="pickup">Pickup Location</label>
+        <input type="text" id="pickup" required />
+      </div>
+
+      <div class="field">
+        <label for="drop">Drop Location</label>
+        <input type="text" id="drop" required />
+      </div>
+
+      <div class="field">
+        <label for="package">Select Package</label>
+        <div class="package-wrap">
+          <input id="package" name="package" class="package-input" placeholder="Choose or type a package" autocomplete="off" required />
+          <button type="button" class="dropdown-toggle" aria-label="Show packages">▾</button>
+          <ul class="dropdown-list" role="listbox" aria-label="Package suggestions">
+            <li class="dropdown-item" data-value="Sigiriya Day Tour" tabindex="-1">Sigiriya Day Tour</li>
+            <li class="dropdown-item" data-value="Kandy City Tour" tabindex="-1">Kandy City Tour</li>
+            <li class="dropdown-item" data-value="Ella Adventure Tour" tabindex="-1">Ella Adventure Tour</li>
+            <li class="dropdown-item" data-value="Galle Dutch Fort Tour" tabindex="-1">Galle Dutch Fort Tour</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="date">Travel Date</label>
+        <input type="date" id="date" required />
+      </div>
+
+      <div class="field">
+        <label for="time">Travel Time</label>
+        <input type="time" id="time" required />
+      </div>
+
+      <div class="field">
+        <label for="vehicle">Vehicle Type</label>
+        <select id="vehicle" required>
+          <option value="">Select Vehicle</option>
+          <option value="Economy Car">Economy Car</option>
+          <option value="SUV">SUV</option>
+          <option value="Van">Van</option>
+          <option value="Luxury Car">Luxury Car</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="travelers">Number of Travelers</label>
+        <input type="number" id="travelers" min="1" required />
+      </div>
+
+      <div class="field full">
+        <label for="message">Special Requests</label>
+        <textarea id="message" rows="4"></textarea>
+      </div>
+
+      <div class="field full actions">
+        <button type="submit">Submit Booking</button>
+      </div>
+    </div>
+  </form>
+
+  <div id="successMsg" class="success">Your booking has been submitted successfully!</div>
+</div>
+
+<script>
+  document.getElementById("bookingForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const data = {
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value,
+      whatsapp: document.getElementById("whatsapp").value,
+      pickup: document.getElementById("pickup").value,
+      drop: document.getElementById("drop").value,
+      package: document.getElementById("package").value,
+      date: document.getElementById("date").value,
+      time: document.getElementById("time").value,
+      vehicle: document.getElementById("vehicle").value,
+      travelers: document.getElementById("travelers").value,
+      message: document.getElementById("message").value
+    };
+
+    try {
+      const response = await fetch('http://localhost:5000/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if(response.ok){
+        document.getElementById("successMsg").style.display = "block";
+        this.reset();
+      } else {
+        alert('Error submitting booking');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Server error');
+    }
+  });
+</script>
+
+<script>
+  // Interactive package dropdown: filterable, clickable, keyboard accessible
+  (function(){
+    const packages = [
+      'Sigiriya Day Tour',
+      'Kandy City Tour',
+      'Ella Adventure Tour',
+      'Galle Dutch Fort Tour'
+    ];
+
+    const wrap = document.querySelector('.package-wrap');
+    if(!wrap) return;
+    const input = wrap.querySelector('#package');
+    const toggle = wrap.querySelector('.dropdown-toggle');
+    const list = wrap.querySelector('.dropdown-list');
+
+    function openList(){ list.classList.add('show'); }
+    function closeList(){ list.classList.remove('show'); }
+
+    // Build list from array (filtered)
+    function buildList(items){
+      list.innerHTML = items.map(v => `<li class="dropdown-item" data-value="${v}" tabindex="-1">${v}</li>`).join('');
+    }
+
+    buildList(packages);
+
+    // Filter as user types
+    input.addEventListener('input', (e)=>{
+      const q = input.value.trim().toLowerCase();
+      const filtered = packages.filter(p=>p.toLowerCase().includes(q));
+      buildList(filtered.length?filtered:packages);
+      openList();
+    });
+
+    input.addEventListener('focus', ()=>{ buildList(packages); openList(); });
+
+    toggle.addEventListener('click', ()=>{ if(list.classList.contains('show')) closeList(); else { buildList(packages); openList(); input.focus(); } });
+
+    // Click selection
+    list.addEventListener('click', (e)=>{
+      const item = e.target.closest('.dropdown-item');
+      if(!item) return;
+      input.value = item.dataset.value;
+      closeList();
+      input.dispatchEvent(new Event('change'));
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e)=>{ if(!wrap.contains(e.target)) closeList(); });
+
+    // Keyboard navigation
+    let focusedIndex = -1;
+    input.addEventListener('keydown', (e)=>{
+      const items = Array.from(list.querySelectorAll('.dropdown-item'));
+      if(e.key === 'ArrowDown'){
+        e.preventDefault(); focusedIndex = Math.min(focusedIndex+1, items.length-1); items[focusedIndex]?.focus();
+      } else if(e.key === 'ArrowUp'){
+        e.preventDefault(); focusedIndex = Math.max(focusedIndex-1, 0); items[focusedIndex]?.focus();
+      } else if(e.key === 'Enter'){
+        const el = document.activeElement;
+        if(el && el.classList.contains('dropdown-item')){ e.preventDefault(); el.click(); }
+      } else if(e.key === 'Escape'){
+        closeList();
+      } else {
+        focusedIndex = -1;
+      }
+    });
+
+    // Allow Enter on list items via keyboard
+    list.addEventListener('keydown', (e)=>{ if(e.key === 'Enter'){ e.preventDefault(); e.target.click(); } });
+  })();
+</script>
+
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Buddiezs SL - Book Your Trip</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <!-- EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <style>
+    :root{
+      --bg:#f6f9fcba;
+      --card: rgba(57, 72, 55, 0.3);
+      --primary: rgba(24, 31, 23, 0.2);
+      --muted:#141719;
+      --accent:linear-gradient(90deg,#0b69d6 0%,#24aec7 100%);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: #0f172a;
+      min-height: 100vh;
+    }
+    body::before{
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: url('bg7.jpg') center center/cover no-repeat;
+      opacity: 0.78;
+      filter: saturate(1.02) contrast(1.02) brightness(0.92);
+    }
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 28px 16px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-family: 'Poppins', sans-serif;
+      text-transform: uppercase;
+    }
+    .logo {width: 70px;height: 70px;object-fit: contain;}
+    .container {
+      width: 92%;
+      max-width: 980px;
+      margin: 28px auto;
+      background: var(--card);
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.08);
+      border: 1px solid rgba(15,23,42,0.03);
+      backdrop-filter: blur(8px);
+    }
+    h2{font-size:24px;margin-bottom:12px;font-weight:700}
+    .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:end}
+    .field{display:flex;flex-direction:column}
+    .field.full{grid-column:1/-1}
+    label{font-weight:600;margin-bottom:8px;color:#eff1f5e8}
+    input,select,textarea{
+      padding:12px 14px;
+      border-radius:12px;
+      border:2px solid rgba(15,23,42,0.12);
+      background:#ffffff88;
+      font-size:0.95rem;
+      transition:all .2s;
+    }
+    input:focus,select:focus,textarea:focus{
+      outline:none;border-color:#0b69d6;
+      box-shadow:0 0 0 4px rgba(11,105,214,0.15);
+    }
+    .package-wrap{position:relative}
+    .package-input{padding-right:44px !important}
+    .dropdown-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:20px;cursor:pointer}
+    .dropdown-list{
+      position:absolute;left:0;right:0;top:calc(100% + 8px);
+      background:#fff;border-radius:12px;
+      box-shadow:0 12px 35px rgba(0,0,0,0.15);
+      max-height:220px;overflow:auto;z-index:50;
+      opacity:0;pointer-events:none;transform:translateY(-10px);transition:all .2s;
+    }
+    .dropdown-list.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+    .dropdown-item{padding:10px 14px;cursor:pointer;border-radius:8px;margin:4px}
+    .dropdown-item:hover{background:rgba(11,105,214,0.1)}
+
+    button{
+      padding:14px 28px;border:none;border-radius:12px;
+      background:var(--accent);color:#fff;font-weight:700;font-size:1.1rem;
+      cursor:pointer;box-shadow:0 8px 25px rgba(11,105,214,0.2);
+      transition:all .2s;
+    }
+    button:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(11,105,214,0.3)}
+
+    .success, .receipt{
+      margin-top:20px;padding:18px;border-radius:12px;display:none;
+    }
+    .success{background:#ecfdf5;color:#065f46;border:1px solid #86efac}
+    .receipt{background:#fff;border:1px solid #e2e8f0;padding:24px;border-radius:12px;font-size:0.95rem}
+
+    @media (max-width:720px){.form-grid{grid-template-columns:1fr}}
+
+
+
+
+  .snow {
+  position: fixed;
+  top: -10px;
+  color: rgb(127, 183, 223);
+  font-size: 1em;
+  user-select: none;
+  pointer-events: none;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh);
+  }
+}
+
+
+
+
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="Travel Buddiezs SL" class="logo">
+  Travel Buddiezs SL
+</header>
+
+<div class="container">
+  <h2>Book Your Trip</h2>
+  <p class="lead" style="color:var(--muted);margin-bottom:24px;">Fill in the details and we’ll confirm your adventure instantly!</p>
+
+  <form id="bookingForm">
+    <div class="form-grid">
+      <!-- All your existing fields (same as before) -->
+      <div class="field"><label for="name">Full Name</label><input type="text" id="name" required></div>
+      <div class="field"><label for="email">Email Address</label><input type="email" id="email" required></div>
+      <div class="field"><label for="phone">Phone Number</label><input type="text" id="phone" required></div>
+      <div class="field"><label for="whatsapp">WhatsApp Number</label><input type="text" id="whatsapp" required placeholder="94xxxxxxxxx"></div>
+      <div class="field"><label for="pickup">Pickup Location</label><input type="text" id="pickup" required></div>
+      <div class="field"><label for="drop">Drop Location</label><input type="text" id="drop" required></div>
+
+      <div class="field">
+        <label for="package">Select Package</label>
+        <div class="package-wrap">
+          <input id="package" class="package-input" placeholder="Type or choose package" autocomplete="off" required>
+          <button type="button" class="dropdown-toggle" aria-label="Toggle">▾</button>
+          <ul class="dropdown-list">
+            <li class="dropdown-item" data-value="Sigiriya Day Tour">Sigiriya Day Tour</li>
+            <li class="dropdown-item" data-value="Kandy City Tour">Kandy City Tour</li>
+            <li class="dropdown-item" data-value="Ella Adventure Tour">Ella Adventure Tour</li>
+            <li class="dropdown-item" data-value="Galle Dutch Fort Tour">Galle Dutch Fort Tour</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="field"><label for="date">Travel Date</label><input type="date" id="date" required></div>
+      <div class="field"><label for="time">Travel Time</label><input type="time" id="time" required></div>
+      <div class="field"><label for="vehicle">Vehicle Type</label>
+        <select id="vehicle" required>
+          <option value="">Select Vehicle</option>
+          <option>Economy Car</option>
+          <option>SUV</option>
+          <option>Van</option>
+          <option>Luxury Car</option>
+        </select>
+      </div>
+      <div class="field"><label for="travelers">Number of Travelers</label><input type="number" id="travelers" min="1" required></div>
+      <div class="field full"><label for="message">Special Requests (Optional)</label><textarea id="message"></textarea></div>
+
+      <div class="field full" style="text-align:center;margin-top:12px;">
+        <button type="submit">Submit Booking</button>
+      </div>
+    </div>
+  </form>
+
+  <div id="successMsg" class="success">
+    <strong>Thank you!</strong> Your booking is confirmed. Check your WhatsApp & Email for the receipt.
+  </div>
+
+  <div id="receiptPreview" class="receipt"></div>
+</div>
+
+<!-- EmailJS Initialization (Replace with your own keys) -->
+<script type="text/javascript">
+  (function(){
+    emailjs.init("fSjft8hXRKgA3FnL-"); // ← Get this free from emailjs.com
+  })();
+</script>
+
+<script>
+  // === 1. Package Dropdown (unchanged) ===
+  (function(){
+    const packages = ['Sigiriya Day Tour','Kandy City Tour','Ella Adventure Tour','Galle Dutch Fort Tour'];
+    const wrap = document.querySelector('.package-wrap');
+    const input = wrap.querySelector('#package');
+    const toggle = wrap.querySelector('.dropdown-toggle');
+    const list = wrap.querySelector('.dropdown-list');
+
+    const build = (items) => list.innerHTML = items.map(v=>`<li class="dropdown-item" data-value="${vtyw(v)}">${v}</li>`).join('');
+    const open = () => { build(packages); list.classList.add('show'); }
+    const close = () => list.classList.remove('show');
+
+    input.addEventListener('input', () => {
+      const q = input.value.toLowerCase();
+      build(packages.filter(p=>p.toLowerCase().includes(q)));
+      open();
+    });
+    input.addEventListener('focus', open);
+    toggle.addEventListener('click', ()=> list.classList.contains('show') ? close() : open());
+    list.addEventListener('click', e=>{
+      const item = e.target.closest('.dropdown-item');
+      if(item){ input.value = item.dataset.value; close(); }
+    });
+    document.addEventListener('click', e=>{ if(!wrap.contains(e.target)) close(); });
+  })();
+
+  // === 2. Main Submit Logic ===
+  document.getElementById("bookingForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const d = {
+      name: document.getElementById("name").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      whatsapp: document.getElementById("whatsapp").value.trim().replace(/\D/g,''), // numbers only
+      pickup: document.getElementById("pickup").value.trim(),
+      drop: document.getElementById("drop").value.trim(),
+      package: document.getElementById("package").value.trim(),
+      date: document.getElementById("date").value,
+      time: document.getElementById("time").value,
+      vehicle: document.getElementById("vehicle").value,
+      travelers: document.getElementById("travelers").value,
+      message: document.getElementById("message").value.trim()
+    };
+
+    // Generate beautiful receipt text
+    const receiptText = `
+🌟 *Thank You ${d.name}! Your Trip is Confirmed* 🌟
+
+*Booking Details*
+📦 Package: ${d.package}
+🚕 Vehicle: ${d.vehicle}
+📍 Pickup: ${d.pickup}
+🎯 Drop: ${d.drop}
+📅 Date: ${new Date(d.date).toLocaleDateString('en-GB')}
+🕐 Time: ${d.time}
+👥 Travelers: ${d.travelers}
+💬 Special Requests: ${d.message || 'None'}
+
+We’ll pick you up on time! Safe travels with Travel Buddiezs SL 🚌
+
+Need help? Reply to this message or call +94 754727650
+    `.trim();
+
+    const receiptHTML = receiptText.replace(/\n/g, '<br>').replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+
+    // Show receipt on page
+    document.getElementById("receiptPreview").innerHTML = `<h3 style="margin-bottom:12px">Your Booking Receipt</h3><div style="line-height:1.7">${receiptHTML}</div>`;
+    document.getElementById("successMsg").style.display = "block";
+    document.getElementById("receiptPreview").style.display = "block";
+
+    // === Send Email via EmailJS ===
+    emailjs.send("service_poujvkh", "template_0p0yzpa", {
+      to_name: d.name,
+      to_email: d.email,
+      receipt: receiptText,
+      whatsapp: d.whatsapp
+    }).then(() => console.log("Email sent"))
+      .catch(err => console.error("EmailJS error:", err));
+
+    // === Open WhatsApp with pre-filled message (mobile + desktop) ===
+    const waText = encodeURIComponent(receiptText);
+    const waNumber = d.whatsapp.startsWith('94') ? d.whatsapp : '94' + d.whatsapp.replace(/^0/, '');
+   const waURL = `https://wa.me/94754727650?text=${waText}`; // ← Change 94XXXXXXXXX to your business number
+    window.open(waURL, "_blank");
+
+    // Reset form
+    this.reset();
+  });
+</script>
+
+<!-- === . Snow Animation === -->
+
+<script>
+function createSnow() {
+  const snow = document.createElement("div");
+  snow.className = "snow";
+  snow.innerHTML = "❄";
+
+  snow.style.left = Math.random() * window.innerWidth + "px";
+  snow.style.fontSize = (10 + Math.random() * 20) + "px";
+
+  snow.style.animationDuration = (3 + Math.random() * 5) + "s";
+  snow.style.opacity = Math.random();
+
+  document.body.appendChild(snow);
+
+  setTimeout(() => {
+    snow.remove();
+  }, 8000);
+}
+
+setInterval(createSnow, 200);
+</script>
+
+<!-- === . Snow Animation === -->
+
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Buddiez</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Raleway:wght@800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+/* Snowflake styles */
+
+    .snow {
+  position: fixed;
+  top: -10px;
+  color: rgb(127, 183, 223);
+  font-size: 1em;
+  user-select: none;
+  pointer-events: none;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh);
+  }
+}
+
+    body {
+      position: relative;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow-x: hidden;
+    }
+    /* Background slider sits under content (use JS to populate slides) */
+    #bg-slider {
+      position: fixed;
+      inset: 0; /* top:0; right:0; bottom:0; left:0; */
+      z-index: -2;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    /* individual slides (will be created dynamically by script) */
+    .bg-slide {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+      transform: translateZ(0);
+      filter: brightness(0.85) saturate(1.05);
+    }
+    .bg-slide.active { opacity: 1; }
+
+    /* Ensure content sits above background */
+    .content-container { position: relative; z-index: 2; }
+
+    /* --- Splash Screen --- */
+    #splash-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: black;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      animation: fadeOut 0.6s ease forwards;
+      animation-delay: 0.6s;
+    }
+
+    #splash-screen img {
+      width: 120px;
+      height: auto;
+      margin-bottom: 15px;
+      animation: popIn 0.5s ease;
+    }
+
+    #splash-screen h1 {
+      font-size: 2rem;
+      color: #00e0ff;
+      margin-bottom: 8px;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    @keyframes popIn {
+      from {transform: scale(0.5); opacity: 0;}
+      to {transform: scale(1); opacity: 1;}
+    }
+
+    /* --- Main Page --- */
+    .content-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .content-box {
+      background: rgba(54, 67, 52, 0.2);
+      backdrop-filter: blur(5px);
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      animation: fadeIn 1s ease;
+      margin: 20px;
+    }
+
+    .logo {
+      width: 140px;
+      height: auto;
+      margin-bottom: 20px;
+      animation: fadeIn 2s ease;
+    }
+
+    h1 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 3.2rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: #fcf5f5;
+      text-transform: uppercase;
+      animation: slideUp 1.5s ease;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3),
+                   0 0 40px rgba(255, 255, 255, 0.653);
+      background: linear-gradient(135deg, #faf8f8 0%, #d5eef0 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, #80dce8, #ffffff);
+      border-radius: 2px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #f7f2f2;
+      text-shadow: 4px 5px 8px rgba(0, 0, 0, 0.6),
+                   0 0 40px rgba(200, 212, 214, 0.5);
+      max-width: 500px;
+      margin: 15px auto 30px;
+      animation: fadeIn 2.5s ease;
+    }
+
+    .social-links a {
+      font-size: 1.8rem;
+      margin: 0 12px;
+      transition: 0.3s;
+    }
+
+    .social-links a:hover {
+      transform: scale(1.2);
+    }
+
+    /* Social Media Brand Colors */
+    .social-links a .fa-facebook {
+      color: #1877f2;
+    }
+
+    .social-links a .fa-facebook:hover {
+      color: #1559b8;
+    }
+
+    .social-links a .fa-instagram {
+      color: #e4405f;
+      background: -webkit-linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .social-links a .fa-instagram:hover {
+      background: -webkit-linear-gradient(45deg, #304293, #403EA3, #62297D, #8F2761, #A62450, #B81616);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .social-links a .fa-whatsapp {
+      color: #25D366;
+    }
+
+    .social-links a .fa-whatsapp:hover {
+      color: #128C7E;
+    }
+
+    .social-links a .fa-tiktok {
+      color: #000000;
+      text-shadow: 2px 2px #69C9D0, -2px -2px #EE1D52;
+    }
+
+    .social-links a .fa-tiktok:hover {
+      color: #333333;
+      text-shadow: 2px 2px #4FA8AE, -2px -2px #C91843;
+    }
+
+    /* Book Now Button */
+    .book-btn {
+      display: inline-block;
+      padding: 9px 22px;
+      margin-top: 25px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, #2c5257, #4c8847);
+      border: none;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: 0.3s;
+      box-shadow: 0 5px 20px rgba(0, 224, 255, 0.4);
+    }
+
+    .book-btn:hover {
+      background: linear-gradient(135deg, #00aaff, #435d60);
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(0, 224, 255, 0.6);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+      color: #dfcdcd;
+      width: 100%;
+      text-align: center;
+      padding: 10px;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    @keyframes slideUp {
+      from {transform: translateY(50px); opacity: 0;}
+      to {transform: translateY(0); opacity: 1;}
+    }
+
+    /* --- Media Queries --- */
+    @media screen and (max-width: 480px) {
+      .content-box { padding: 20px 15px; margin: 10px; border-radius: 15px; }
+      h1 { font-size: 2rem; letter-spacing: 2px; }
+      p { font-size: 1rem; padding: 0 20px; }
+      .logo { width: 100px; }
+      .social-links a { font-size: 1.5rem; margin: 0 8px; }
+      #splash-screen img { width: 80px; }
+      #splash-screen h1 { font-size: 1.5rem; }
+      .book-btn { padding: 12px 28px; font-size: 1rem; }
+    }
+
+    @media screen and (min-width: 481px) and (max-width: 768px) {
+      h1 { font-size: 2.5rem; }
+      p { font-size: 1rem; padding: 0 30px; }
+      .logo { width: 120px; }
+    }
+  </style>
+
+
+
+<!--Snow Spript -->
+
+
+<script>
+function createSnow() {
+  const snow = document.createElement("div");
+  snow.className = "snow";
+  snow.innerHTML = "❄";
+
+  snow.style.left = Math.random() * window.innerWidth + "px";
+  snow.style.fontSize = (10 + Math.random() * 20) + "px";
+
+  snow.style.animationDuration = (3 + Math.random() * 5) + "s";
+  snow.style.opacity = Math.random();
+
+  document.body.appendChild(snow);
+
+  setTimeout(() => {
+    snow.remove();
+  }, 8000);
+}
+
+setInterval(createSnow, 200);
+</script>
+
+
+</head>
+<body>
+
+  <!-- Background slider: JS will inject 6 slides here (bg1.jpg..bg6.jpg) -->
+  <div id="bg-slider" aria-hidden="true"></div>
+
+  <!-- Splash Screen -->
+  <div id="splash-screen">
+    <img src="logo2.jpeg" alt="Brand Logo">
+    <h1>Travel Buddiez</h1>
+  </div>
+
+  <!-- Main Content -->
+  <div id="main-content" style="opacity:0; transition: opacity 0.5s;" class="content-container">
+    <div class="content-box">
+      <img src="logo1.png" alt="Logo" class="logo">
+      <h1>Travel Buddiez SL</h1>
+      <p>"Discover Sri Lanka’s golden beaches, misty mountains, and vibrant culture. From sun-kissed shores to ancient cities, every corner tells a story of wonder — the Jewel of the Indian Ocean."</p>
+
+      <div class="social-links">
+        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+        <a href="https://wa.me/94754727650?text=Hi,%20I'm%20interested%20in%20traveling%20to%20Sri%20Lanka!" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://www.instagram.com/travel_buddiez_sl/" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@the_newpath?_t=ZS-90qrchEzb3i&_r=1" target="_blank"><i class="fab fa-tiktok"></i></a>
+      </div>
+      
+      <!-- Book Now Button -->
+      <a href="Booking_Page.html" target="_blank" class="book-btn">
+        Book Now
+      </a>
+    </div>
+    </div>
+    <footer>
+      © 2025 Travel Buddiez SL. All Rights Reserved.
+    </footer>
+  
+
+
+
+  <script>
+    // Show main content after splash screen
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        document.getElementById("main-content").style.opacity = "1";
+        document.getElementById("splash-screen").style.display = "none";
+      }, 600); // 0.6 seconds
+    });
+  </script>
+
+  <script>
+    /* Background slider script
+       - Place 6 images in the same folder as this HTML and name them: bg1.jpg .. bg6.jpg
+       - Config: change `images` array or `CHANGE_INTERVAL` (ms) below
+    */
+    (function(){
+      const images = ['bg1.jpg','bg2.jpg','bg3.jpg','bg4.jpg','bg5.jpg','bg6.jpg'];
+      const CHANGE_INTERVAL = 6000; // ms between changes
+      const FADE_DURATION = 1200; // should match CSS transition
+
+      const slider = document.getElementById('bg-slider');
+      if(!slider) return;
+
+      // Preload images and create slide elements
+      const slides = [];
+      images.forEach((src, i) => {
+        const img = new Image();
+        img.src = src;
+
+        const slide = document.createElement('div');
+        slide.className = 'bg-slide';
+        slide.style.backgroundImage = `url('${src}')`;
+        if(i===0) slide.classList.add('active');
+        slider.appendChild(slide);
+        slides.push(slide);
+      });
+
+      // If no images found or only one, do nothing further
+      if(slides.length <= 1) return;
+
+      let current = 0;
+      setInterval(() => {
+        const next = (current + 1) % slides.length;
+        slides[current].classList.remove('active');
+        slides[next].classList.add('active');
+        current = next;
+      }, CHANGE_INTERVAL);
+    })();
+  </script>
+
+</body>
+</html>
+
+
