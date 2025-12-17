@@ -207,7 +207,7 @@
     const toggle = wrap.querySelector('.dropdown-toggle');
     const list = wrap.querySelector('.dropdown-list');
 
-    const build = (items) => list.innerHTML = items.map(v=>`<li class="dropdown-item" data-value="${vtyw(v)}">${v}</li>`).join('');
+    const build = (items) => list.innerHTML = items.map(v=>`<li class="dropdown-item" data-value="${v}">${v}</li>`).join('');
     const open = () => { build(packages); list.classList.add('show'); }
     const close = () => list.classList.remove('show');
 
@@ -281,8 +281,8 @@ Need help? Reply to this message or call +94 754727650
 
     // === Open WhatsApp with pre-filled message (mobile + desktop) ===
     const waText = encodeURIComponent(receiptText);
-    const waNumber = d.whatsapp.startsWith('94') ? d.whatsapp : '94' + d.whatsapp.replace(/^0/, '');
-   const waURL = `https://wa.me/94754727650?text=${waText}`; // ← Change 94XXXXXXXXX to your business number
+    const businessNumber = '94754727650'; // set your business number (international format, no +)
+    const waURL = `https://wa.me/${businessNumber}?text=${waText}`;
     window.open(waURL, "_blank");
 
     // Reset form
